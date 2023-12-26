@@ -4,12 +4,12 @@ import vtk
 # 读取Dicom数据，对应source
 v16 = vtk.vtkDICOMImageReader()
 # v16.SetDirectoryName('D:/dicom_image/V')
-v16.SetDirectoryName('D:/dicom_image/vtkDicomRender-master/sample')
+v16.SetDirectoryName('dicom_slices')
 
 # 利用封装好的MC算法抽取等值面，对应filter
 marchingCubes = vtk.vtkMarchingCubes()
 marchingCubes.SetInputConnection(v16.GetOutputPort())
-marchingCubes.SetValue(0, -10)
+marchingCubes.SetValue(0, 1000)
 
 # 剔除旧的或废除的数据单元，提高绘制速度，对应filter
 Stripper = vtk.vtkStripper()
@@ -30,8 +30,18 @@ actor.GetProperty().SetSpecular(.1)
 # 设置高光能量
 actor.GetProperty().SetSpecularPower(100)
 
+# 方框
+outlineData = vtk.vtkOutlineFilter()
+outlineData.SetInputConnection(v16.GetOutputPort())
+mapOutline = vtk.vtkPolyDataMapper()
+mapOutline.SetInputConnection(outlineData.GetOutputPort())
+outline = vtk.vtkActor()
+outline.SetMapper(mapOutline)
+outline.GetProperty().SetColor(0, 0, 0)
+
 # 定义舞台，也就是渲染器，对应render
 renderer = vtk.vtkRenderer()
+renderer.SetBackground(250, 250, 250)
 
 # 定义舞台上的相机，对应render
 aCamera = vtk.vtkCamera()
@@ -42,6 +52,7 @@ aCamera.ComputeViewPlaneNormal()
 
 # 定义整个剧院(应用窗口)，对应renderwindow
 rewin = vtk.vtkRenderWindow()
+rewin.SetSize(500, 500)
 
 # 定义与actor之间的交互，对应interactor
 interactor = vtk.vtkRenderWindowInteractor()
@@ -60,6 +71,7 @@ interactor.SetRenderWindow(rewin)
 
 # 将角色添加到舞台中
 renderer.AddActor(actor)
+renderer.AddActor(outline)
 
 # 将相机的焦点移动至中央，The camera will reposition itself to view the center point of the actors,
 # and move along its initial view plane normal

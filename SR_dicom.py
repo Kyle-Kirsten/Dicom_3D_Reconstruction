@@ -19,7 +19,7 @@ iren = vtk.vtkRenderWindowInteractor()  # 窗口交互
 iren.SetRenderWindow(renWin)
 
 # The following reader is used to read a series of 2D slices(images)
-# that compose the volume.Theslicedimensions are set, and the
+# that compose the volume.The slice dimensions are set, and the
 #  pixel spacing.The data Endianness must also be specified.The reader
 #  uses the FilePrefix in combination with the slice number to construct
 # filenames using the format FilePrefix. % d.(In this case the FilePrefix
@@ -27,7 +27,7 @@ iren.SetRenderWindow(renWin)
 
 v16 = vtk.vtkDICOMImageReader()
 # v16.SetDirectoryName('D:/dicom_image/V')
-v16.SetDirectoryName('D:/dicom_image/vtkDicomRender-master/sample')
+v16.SetDirectoryName('dicom_slices')
 
 
 
@@ -36,7 +36,7 @@ v16.SetDirectoryName('D:/dicom_image/vtkDicomRender-master/sample')
 # used to create normals for smooth surface shading during rendering.
 skinExtractor = vtk.vtkContourFilter()
 skinExtractor.SetInputConnection(v16.GetOutputPort())
-skinExtractor.SetValue(0, -10)
+skinExtractor.SetValue(0, 1000)
 # skinExtractor.GenerateValues(2, 100, 110)
 skinNormals = vtk.vtkPolyDataNormals()
 skinNormals.SetInputConnection(skinExtractor.GetOutputPort())
@@ -49,7 +49,7 @@ skin = vtk.vtkActor()
 # 设置颜色RGB颜色系统就是由三个颜色分量：红色(R)、绿色(G)和蓝色(B)的组合表示，
 # 在VTK里这三个分量的取值都是从0到1，(0, 0, 0)表示黑色，(1, 1, 1)表示白色。
 #  vtkProperty::SetColor(r,g, b)采用的就是RGB颜色系统设置颜色属性值。
-#skin.GetProperty().SetColor(0, 0, 1)
+# skin.GetProperty().SetColor(0, 0, 1)
 skin.SetMapper(skinMapper)
 
 skin.GetProperty().SetDiffuseColor(1, .49, .25)

@@ -1,7 +1,7 @@
 # This example reads a volume dataset and displays it via volume rendering(体绘制).
 
 import vtk
-from vtk.util.misc import vtkGetDataRoot
+from vtkmodules.util.misc import vtkGetDataRoot
 
 # Create the renderer, the render window, and the interactor. The renderer
 # draws into the render window, the interactor enables mouse- and
@@ -27,7 +27,7 @@ iren.SetRenderWindow(renWin)
 # v16.SetDataSpacing(3.2, 3.2, 1.5)
 v16 = vtk.vtkDICOMImageReader()
 # v16.SetDirectoryName('D:/dicom_image/vtkDicomRender-master/sample')
-v16.SetDirectoryName('D:/dicom_image/V')
+v16.SetDirectoryName('dicom_slices')
 
 # The volume will be displayed by ray-cast alpha compositing.
 # A ray-cast mapper is needed to do the ray-casting, and a
@@ -42,17 +42,17 @@ volumeMapper.SetBlendModeToComposite()
 # and another color for bone (1150 and over).
 volumeColor = vtk.vtkColorTransferFunction()
 volumeColor.AddRGBPoint(0,    0.0, 0.0, 0.0)
-volumeColor.AddRGBPoint(500,  1.0, 0.5, 0.3)
-volumeColor.AddRGBPoint(1000, 1.0, 0.5, 0.3)
+volumeColor.AddRGBPoint(500,  1.0, 1.0, 0.3)
+volumeColor.AddRGBPoint(1000, 1.0, 1.0, 0.3)
 volumeColor.AddRGBPoint(1150, 1.0, 1.0, 0.9)
 
 # The opacity transfer function is used to control the opacity
 # of different tissue types.
 volumeScalarOpacity = vtk.vtkPiecewiseFunction()
 volumeScalarOpacity.AddPoint(0,    0.00)
-volumeScalarOpacity.AddPoint(500,  0.15)
-volumeScalarOpacity.AddPoint(1000, 0.15)
-volumeScalarOpacity.AddPoint(1150, 0.85)
+volumeScalarOpacity.AddPoint(500,  .5)
+volumeScalarOpacity.AddPoint(1000, 1.)
+volumeScalarOpacity.AddPoint(1150, 1.)
 
 # The gradient opacity function is used to decrease the opacity
 # in the "flat" regions of the volume while maintaining the opacity
